@@ -1,0 +1,37 @@
+version: '2'
+services:
+  node1:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: "insecure"
+    ports:
+      - 33061:3306/tcp
+    volumes:
+      - ./data/node1/mariadb:/var/lib/mysql
+      - ./galera-config/node1.conf:/etc/mysql/mariadb.conf.d/galera.cnf
+    command:
+      --wsrep-new-cluster
+
+  node2:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: "insecure"
+    ports:
+      - 33062:3306/tcp
+    volumes:
+      - ./data/node2/mariadb:/var/lib/mysql
+      - ./galera-config/node2.conf:/etc/mysql/mariadb.conf.d/galera.cnf
+    depends_on:
+      - node1
+
+  node3:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: "insecure"
+    ports:
+      - 33063:3306/tcp
+    volumes:
+      - ./data/node3/mariadb:/var/lib/mysql
+      - ./galera-config/node3.conf:/etc/mysql/mariadb.conf.d/galera.cnf
+    depends_on:
+      - node1
